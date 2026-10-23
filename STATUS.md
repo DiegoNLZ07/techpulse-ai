@@ -6,13 +6,14 @@
 ---
 
 ## 2. Estado Actual del Proyecto
-- **Fase Actual:** FASE 4 - Backend FastAPI + Analizador Monetizable de CV en PDF.
+- **Fase Actual:** FASE 5 - Frontend SaaS en Vue 3 (Dark Mode).
 - **Estado de Fase 0:** COMPLETADA ✅
 - **Estado de Fase 1:** COMPLETADA ✅
 - **Estado de Fase 2:** COMPLETADA ✅
 - **Estado de Fase 3:** COMPLETADA ✅
 - **Estado de Fase 4:** COMPLETADA ✅
-- **Próxima Fase:** FASE 5 - Frontend SaaS en Vue 3 (Dark Mode).
+- **Estado de Fase 5:** COMPLETADA ✅
+- **Próxima Fase:** FASE 6 - Testing Automatizado, README de Alto Impacto y Despliegue en GitHub.
 
 ---
 
@@ -89,6 +90,20 @@
   - `VotingRegressor(Ridge + GradientBoosting/RF)` combina la sensibilidad marginal continua lineal con interacciones no lineales de árboles de decisión.
   - El motor de inferencia entrega predicción puntual $\hat{y}$ e intervalo de confianza $[\hat{y} - \text{MAE}, \hat{y} + \text{MAE}]$ para ofrecer bandas salariales realistas a usuarios B2C/B2B.
 
+### ADR 5.1: Arquitectura Frontend (Vue 3 Composition API + Pinia + Chart.js Canvas)
+- **Fecha:** 23-10-2026
+- **Decisión:** **Opción A - Vue 3 con `<script setup>`, Pinia para gestión de estado global reactiva y Chart.js (`vue-chartjs`) sobre HTML5 Canvas**.
+- **Justificación Técnica:**
+  - Estándar de oro del ecosistema Vue 3 moderno con reactividad desacoplada de la vista.
+  - Pinia permite compartir el perfil del CV y la valorización entre pestañas sin acoplamiento de componentes.
+  - Switch reactivo global `USD/Mes` (estándar LatAm) vs. `USD/Año` (estándar Global) unificado en Pinia.
+  - Chart.js v4 ofrece renderizado en Canvas ultra liviano (~60 KB), evitando el sobrepeso de librerías SVG como ApexCharts (~500 KB).
+- **Reglas de Implementación Mandatorias:**
+  1. **Capa API Desacoplada (`api.js`):** Cliente Axios con variable de entorno `VITE_API_URL` y manejo estandarizado de errores.
+  2. **Switch Global de Periodicidad:** Interruptor reactivo en Navbar que recalcula y actualiza todas las vistas en milisegundos.
+  3. **Registro Exhaustivo en Chart.js:** Configuración con `ChartJS.register(...)` y `maintainAspectRatio: false` con alturas fijas en CSS para evitar bugs de visualización.
+  4. **Modo Oscuro Nativo:** Sistema de variables CSS personalizadas (`--bg-primary: #0b0f19`, `--bg-card: #1e293b`, etc.) con estética SaaS comercial B2C/B2B.
+
 ---
 
 ## 4. Estructura Objetivo del Monorepo
@@ -123,3 +138,5 @@ techpulse-ai/
 | `17598dd` | `feat(ml): implement EDA diagnostics and leak-free feature engineering pipeline` | Script de diagnóstico exploratorio, imputación de seniority, matriz multietiqueta con poda y ColumnTransformer Scikit-learn |
 | `d7194bc` | `feat(ml): train salary regressor and skill ROI engine` | Torneo 5-Fold CV (Ridge, RF, GB, VotingRegressor), inferencia por intervalos y simulador bidimensional de ROI de skills |
 | `01d6dcf` | `feat(api): implement FastAPI REST endpoints with lifespan and CV PDF auditor` | Endpoints REST (market-pulse, predict-offer, career-roi, audit-cv), gestión lifespan de modelos ML, parser de PDF con PyPDF y CORS |
+| `abc7b77` | `test(api): add endpoint verification script for FastAPI suite` | Suite de verificación para los 4 endpoints REST con TestClient |
+| `79fbed6` | `feat(frontend): implement Vue 3 SPA with Pinia Dark Mode and Chartjs` | Dashboard reactivo de 3 pestañas (Radar de Mercado, Predictor y Auditor de CV), switch de periodicidad USD/mes vs USD/año y presets de 1-clic |
