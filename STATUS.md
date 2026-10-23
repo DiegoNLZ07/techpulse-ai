@@ -6,12 +6,13 @@
 ---
 
 ## 2. Estado Actual del Proyecto
-- **Fase Actual:** FASE 3 - Entrenamiento del Modelo ML + Motor Matemático de ROI de Skills.
+- **Fase Actual:** FASE 4 - Backend FastAPI + Analizador Monetizable de CV en PDF.
 - **Estado de Fase 0:** COMPLETADA ✅
 - **Estado de Fase 1:** COMPLETADA ✅
 - **Estado de Fase 2:** COMPLETADA ✅
 - **Estado de Fase 3:** COMPLETADA ✅
-- **Próxima Fase:** FASE 4 - Backend FastAPI + Analizador Monetizable de CV en PDF.
+- **Estado de Fase 4:** COMPLETADA ✅
+- **Próxima Fase:** FASE 5 - Frontend SaaS en Vue 3 (Dark Mode).
 
 ---
 
@@ -121,3 +122,4 @@ techpulse-ai/
 | `11a47c5` | `feat(etl): implement multi-source ingestion and LLM skill extractor` | Modelos SQLAlchemy, esquemas Pydantic, conectores Get On Board/RemoteOK, extractor híbrido y pipeline de orquestación |
 | `17598dd` | `feat(ml): implement EDA diagnostics and leak-free feature engineering pipeline` | Script de diagnóstico exploratorio, imputación de seniority, matriz multietiqueta con poda y ColumnTransformer Scikit-learn |
 | `d7194bc` | `feat(ml): train salary regressor and skill ROI engine` | Torneo 5-Fold CV (Ridge, RF, GB, VotingRegressor), inferencia por intervalos y simulador bidimensional de ROI de skills |
+| `01d6dcf` | `feat(api): implement FastAPI REST endpoints with lifespan and CV PDF auditor` | Endpoints REST (market-pulse, predict-offer, career-roi, audit-cv), gestión lifespan de modelos ML, parser de PDF con PyPDF y CORS |

@@ -179,16 +179,26 @@ class SkillROIEngine:
                 if max_demand > min_demand else 50.0
             )
 
-            # Fórmula Bimensional de ROI (Regla 2)
-            roi_score = 0.60 * norm_salary + 0.40 * norm_demand
+            # Fórmula Bidimensional de ROI Base (60% Salario + 40% Demanda)
+            raw_roi = 0.60 * norm_salary + 0.40 * norm_demand
+
+            # Micro-ajuste de Liquidez (Regla 1 - Fase 4):
+            # Penaliza drásticamente tecnologías sin ofertas reales activas en el segmento
+            if s["unlocked_jobs_count"] == 0:
+                raw_roi *= 0.20  # Penalización del 80% si no hay ofertas en SQL
+            elif s["unlocked_jobs_count"] == 1:
+                raw_roi *= 0.65  # Penalización del 35% si es una vacante aislada
+
+            roi_score = min(100.0, max(0.0, raw_roi))
             s["roi_score"] = round(roi_score, 1)
 
-            if roi_score >= 70.0:
+            # Clasificación de Prioridad considerando liquidez de mercado real
+            if s["unlocked_jobs_count"] >= 3 and roi_score >= 45.0:
                 s["learning_priority"] = "Alta (Top ROI)"
-            elif roi_score >= 40.0:
+            elif s["unlocked_jobs_count"] >= 1 and roi_score >= 30.0:
                 s["learning_priority"] = "Media"
             else:
-                s["learning_priority"] = "Baja / Opcional"
+                s["learning_priority"] = "Baja / Sin Liquidez"
 
         # 5. Ordenar por ROI Score descendente
         simulations.sort(key=lambda x: x["roi_score"], reverse=True)
