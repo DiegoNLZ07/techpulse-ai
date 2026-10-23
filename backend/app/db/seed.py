@@ -32,9 +32,13 @@ def seed_database(force: bool = False):
             data = json.load(f)
 
         print(f"Sembrando {len(data)} ofertas laborales...")
-        skills_cache = {s.canonical_slug: s for s in db.scalars(select(Skill)).all()}
+        existing_jobs = set(db.execute(select(Job.source, Job.external_id)).all())
+        skills_cache = {s.slug: s for s in db.scalars(select(Skill)).all()}
 
         for item in data:
+            if (item["source"], item["external_id"]) in existing_jobs:
+                continue
+
             job = Job(
                 external_id=item["external_id"],
                 source=item["source"],
@@ -56,7 +60,7 @@ def seed_database(force: bool = False):
             for sk_name in item.get("skills", []):
                 disp_name, slug = normalize_skill_name(sk_name)
                 if slug not in skills_cache:
-                    sk_obj = Skill(name=disp_name, canonical_slug=slug, category="technical")
+                    sk_obj = Skill(name=disp_name, slug=slug, category="technical")
                     db.add(sk_obj)
                     db.flush()
                     skills_cache[slug] = sk_obj

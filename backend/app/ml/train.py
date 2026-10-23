@@ -181,6 +181,7 @@ def train_and_save_pipeline(target_min_samples: int = 320) -> Dict[str, Any]:
         "tournament_summary": results,
     }
 
+    MODEL_ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(artifact, MODEL_ARTIFACT_PATH)
     return artifact
 
