@@ -6,10 +6,11 @@
 ---
 
 ## 2. Estado Actual del Proyecto
-- **Fase Actual:** FASE 1 - Pipeline ETL Multi-Fuente (Get On Board + RemoteOK) + Extracción con LLM.
+- **Fase Actual:** FASE 2 - Análisis Exploratorio (EDA) y Feature Engineering sin Data Leakage.
 - **Estado de Fase 0:** COMPLETADA ✅
 - **Estado de Fase 1:** COMPLETADA ✅
-- **Próxima Fase:** FASE 2 - Análisis Exploratorio (EDA) y Feature Engineering sin Data Leakage.
+- **Estado de Fase 2:** COMPLETADA ✅
+- **Próxima Fase:** FASE 3 - Entrenamiento del Modelo ML + Motor Matemático de ROI de Skills.
 
 ---
 
@@ -51,6 +52,32 @@
   2. **Sanitización y Micro-Batching:** Limpieza de HTML crudo a texto plano con `BeautifulSoup` antes de enviar el lote (`list[JobExtractionSchema]`).
   3. **Capa Regex Defensiva:** Catálogo de expresiones regulares y sinónimos canónicos para pre-filtrado rápido y fallback tolerante a fallos.
 
+### ADR 2.1: Tratamiento Matemático de la Variable Objetivo Salarial (Target)
+- **Fecha:** 22-10-2026
+- **Decisión:** **Opción A - Escala Anual Unificada en USD + Transformación Logarítmica (`np.log1p` / `np.expm1`) mediante `TransformedTargetRegressor`**.
+- **Justificación Técnica:**
+  - Corrige la asimetría positiva severa (*right-skewed*) de la distribución salarial observada en el EDA (\$2.1k a \$195k USD).
+  - Estabiliza la varianza (homocedasticidad) y evita que ofertas atípicas muy altas monopolicen la función de pérdida.
+  - Garantiza matemáticamente que las predicciones en inferencia sean estrictamente positivas ($\exp(x) > 0$).
+- **Reglas de Implementación Mandatorias:**
+  1. **Anualización y Rango de Cordura:** Si `source == 'getonboard'` o sueldo < \$12,000 USD, multiplicar por 12. Descartar registros atípicos < \$6,000 o > \$300,000 USD/año.
+  2. **Punto Medio:** Calcular variable base como `(min_salary + max_salary) / 2` (o extremo disponible).
+  3. **Wrapper Scikit-learn:** Usar `TransformedTargetRegressor(regressor=..., func=np.log1p, inverse_func=np.expm1)` en `sklearn.compose` para abstraer la conversión y evaluar directamente en USD reales.
+  4. **Control de Brecha Regional:** Mantener `source` (`market_region`) como feature categórica explícita para capturar el diferencial estructural entre LatAm y Global Remote.
+
+### ADR 2.2: Vectorización de Features y Preprocesamiento Tabular
+- **Fecha:** 22-10-2026
+- **Decisión:** **Opción A - Matriz Binaria Multietiqueta (Top N Skills con Poda por Frecuencia) + Encoders en `ColumnTransformer`**.
+- **Justificación Técnica:**
+  - Máxima explicabilidad analítica para el Simulador de ROI de Skills (permite variar un bit $0 \rightarrow 1$ y calcular el retorno salarial marginal $\Delta \hat{y}$ en milisegundos).
+  - Blindaje contra *Data Leakage* al encapsular transformadores dentro del pipeline de Scikit-Learn.
+  - Inferencia ultra rápida ($< 5\text{ ms}$) y consumo mínimo de memoria ($< 30\text{ MB}$ de RAM), compatible con la capa gratuita de Render (512 MB).
+- **Reglas de Implementación Mandatorias:**
+  1. **Poda por Frecuencia Mínima (`min_freq`):** Filtrar skills con baja ocurrencia en ofertas con sueldo para evitar que tecnologías raras generen sesgos y *overfitting*.
+  2. **Feature de Complejidad del Stack (`skill_count`):** Columna numérica explícita con el total de tecnologías requeridas (`len(skills)`).
+  3. **Enriquecimiento Ligero desde `title`:** Imputar `seniority` si es `'unknown'` inspeccionando palabras clave en el título (`lead`, `senior`, `staff`, `principal`, `architect`, `junior`).
+  4. **Pipeline Scikit-learn Nativo:** Empaquetar `SkillsBinarizer` (heredando de `BaseEstimator, TransformerMixin`), `OrdinalEncoder` para seniority y `OneHotEncoder(handle_unknown='ignore')` para variables categóricas (`category`, `modality`, `market_region`).
+
 ---
 
 ## 4. Estructura Objetivo del Monorepo
@@ -81,4 +108,5 @@ techpulse-ai/
 | Commit Hash | Mensaje | Descripción |
 | :--- | :--- | :--- |
 | `6a36244` | `chore(init): initial commit with secure gitignore and architecture status` | Inicialización del repositorio base con reglas de seguridad y ADR 0.1 |
-| `3d7537b` | `feat(etl): implement multi-source ingestion and LLM skill extractor` | Modelos SQLAlchemy, esquemas Pydantic, conectores Get On Board/RemoteOK, extractor híbrido y pipeline de orquestación |
+| `11a47c5` | `feat(etl): implement multi-source ingestion and LLM skill extractor` | Modelos SQLAlchemy, esquemas Pydantic, conectores Get On Board/RemoteOK, extractor híbrido y pipeline de orquestación |
+| `17598dd` | `feat(ml): implement EDA diagnostics and leak-free feature engineering pipeline` | Script de diagnóstico exploratorio, imputación de seniority, matriz multietiqueta con poda y ColumnTransformer Scikit-learn |
