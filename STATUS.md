@@ -161,3 +161,4 @@ techpulse-ai/
 | `abc7b77` | `test(api): add endpoint verification script for FastAPI suite` | Suite de verificación para los 4 endpoints REST con TestClient |
 | `4e91dbc` | `feat(frontend): implement Vue 3 SPA with Pinia Dark Mode and Chartjs` | Dashboard reactivo de 3 pestañas (Radar de Mercado, Predictor y Auditor de CV), switch de periodicidad USD/mes vs USD/año y presets de 1-clic |
 | `6ab993e` | `feat(ci-deploy): add test suite, github actions workflow, cloud configs and executive readme` | Suite de pytest con 8 tests, GitHub Actions CI, semilla portátil de datos, render.yaml, vercel.json y README ejecutivo de alto impacto |
+| `ef71d1c` | `fix(ci): resolve canonical_slug attribute error in seed.py and add PYTHONPATH in ci.yml` | Corrección de atributo de modelo en semilla, mkdir de artefactos y variables de entorno para CI con Check Verde (Passing ✅) |
