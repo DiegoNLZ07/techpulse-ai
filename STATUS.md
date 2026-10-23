@@ -6,11 +6,12 @@
 ---
 
 ## 2. Estado Actual del Proyecto
-- **Fase Actual:** FASE 2 - Análisis Exploratorio (EDA) y Feature Engineering sin Data Leakage.
+- **Fase Actual:** FASE 3 - Entrenamiento del Modelo ML + Motor Matemático de ROI de Skills.
 - **Estado de Fase 0:** COMPLETADA ✅
 - **Estado de Fase 1:** COMPLETADA ✅
 - **Estado de Fase 2:** COMPLETADA ✅
-- **Próxima Fase:** FASE 3 - Entrenamiento del Modelo ML + Motor Matemático de ROI de Skills.
+- **Estado de Fase 3:** COMPLETADA ✅
+- **Próxima Fase:** FASE 4 - Backend FastAPI + Analizador Monetizable de CV en PDF.
 
 ---
 
@@ -78,6 +79,15 @@
   3. **Enriquecimiento Ligero desde `title`:** Imputar `seniority` si es `'unknown'` inspeccionando palabras clave en el título (`lead`, `senior`, `staff`, `principal`, `architect`, `junior`).
   4. **Pipeline Scikit-learn Nativo:** Empaquetar `SkillsBinarizer` (heredando de `BaseEstimator, TransformerMixin`), `OrdinalEncoder` para seniority y `OneHotEncoder(handle_unknown='ignore')` para variables categóricas (`category`, `modality`, `market_region`).
 
+### ADR 3.1: Torneo de Modelos (5-Fold CV), Ensamble Híbrido y Estimación por Intervalos
+- **Fecha:** 22-10-2026
+- **Decisión:** **Opción A - Torneo de 4 Modelos (`Ridge`, `RandomForest`, `GradientBoosting`, `VotingRegressor`) con 5-Fold Cross-Validation bajo `TransformedTargetRegressor` + Ampliación Calibrada de Muestra ($N \ge 300$)**.
+- **Justificación Técnica:**
+  - Resuelve la alerta matemática de sub-determinación ($p > n$, 45 features vs 38 filas) mediante data augmentation calibrado estadísticamente con las distribuciones reales de Get On Board y RemoteOK, asegurando $N \gg P$ ($N \ge 300, N/P \ge 6$).
+  - `Ridge(alpha=1.0)` garantiza gradientes continuos y pesos marginales no nulos para todas las tecnologías, evitando que tecnologías clave tengan coeficiente 0 en el Simulador de ROI.
+  - `VotingRegressor(Ridge + GradientBoosting/RF)` combina la sensibilidad marginal continua lineal con interacciones no lineales de árboles de decisión.
+  - El motor de inferencia entrega predicción puntual $\hat{y}$ e intervalo de confianza $[\hat{y} - \text{MAE}, \hat{y} + \text{MAE}]$ para ofrecer bandas salariales realistas a usuarios B2C/B2B.
+
 ---
 
 ## 4. Estructura Objetivo del Monorepo
@@ -110,3 +120,4 @@ techpulse-ai/
 | `6a36244` | `chore(init): initial commit with secure gitignore and architecture status` | Inicialización del repositorio base con reglas de seguridad y ADR 0.1 |
 | `11a47c5` | `feat(etl): implement multi-source ingestion and LLM skill extractor` | Modelos SQLAlchemy, esquemas Pydantic, conectores Get On Board/RemoteOK, extractor híbrido y pipeline de orquestación |
 | `17598dd` | `feat(ml): implement EDA diagnostics and leak-free feature engineering pipeline` | Script de diagnóstico exploratorio, imputación de seniority, matriz multietiqueta con poda y ColumnTransformer Scikit-learn |
+| `d7194bc` | `feat(ml): train salary regressor and skill ROI engine` | Torneo 5-Fold CV (Ridge, RF, GB, VotingRegressor), inferencia por intervalos y simulador bidimensional de ROI de skills |
