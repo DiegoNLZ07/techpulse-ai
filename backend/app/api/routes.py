@@ -14,6 +14,7 @@ from backend.app.models.job import Job, JobSkill, Skill
 from backend.app.etl.connectors import clean_html
 from backend.app.etl.extractor import HybridSkillExtractor
 from backend.app.etl.schemas import RawJobData
+from backend.app.ml.features import impute_seniority_from_title
 from backend.app.ml.train import predict_salary_with_confidence
 
 logger = logging.getLogger("api.routes")
@@ -81,7 +82,10 @@ def get_market_pulse():
 
         for j in jobs:
             source_counts[j.source] += 1
-            seniority_counts[j.seniority] += 1
+            sen = impute_seniority_from_title(j.title, j.seniority)
+            if sen == "unknown":
+                sen = "semi-senior"
+            seniority_counts[sen] += 1
 
             min_s = j.min_salary if j.min_salary and j.min_salary > 0 else None
             max_s = j.max_salary if j.max_salary and j.max_salary > 0 else None

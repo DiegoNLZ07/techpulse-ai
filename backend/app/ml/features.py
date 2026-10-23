@@ -24,10 +24,10 @@ from backend.app.models.job import Job, JobSkill, Skill
 # 1. Función de Imputación de Seniority desde el Título (ADR 2.2 - Regla 3)
 # ============================================================================
 SENIORITY_TITLE_PATTERNS = [
-    (re.compile(r"\b(?:lead|tech\s+lead|staff|principal|architect|head|director|arquitecto)\b", re.IGNORECASE), "lead"),
-    (re.compile(r"\b(?:senior|sr\.?|avanzado)\b", re.IGNORECASE), "senior"),
-    (re.compile(r"\b(?:semi[\s\-]senior|ssr\.?|mid|intermediate)\b", re.IGNORECASE), "semi-senior"),
-    (re.compile(r"\b(?:junior|jr\.?|trainee|intern|practicante|entry)\b", re.IGNORECASE), "junior"),
+    (re.compile(r"\b(?:lead|tech\s+lead|l[íi]der|staff|principal|architect|head|director|chief|manager|arquitecto)\b", re.IGNORECASE), "lead"),
+    (re.compile(r"\b(?:senior|sr\.?|avanzado|experto|expert)\b", re.IGNORECASE), "senior"),
+    (re.compile(r"\b(?:semi[\s\-]senior|ssr\.?|mid(?:dle)?|intermedio|intermediate|pleno)\b", re.IGNORECASE), "semi-senior"),
+    (re.compile(r"\b(?:junior|jr\.?|trainee|intern|practicante|entry|graduate|associate)\b", re.IGNORECASE), "junior"),
 ]
 
 

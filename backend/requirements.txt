@@ -4,6 +4,7 @@ uvicorn[standard]>=0.31.0
 pydantic>=2.9.0
 pydantic-settings>=2.5.0
 python-dotenv>=1.0.1
+python-multipart>=0.0.12
 
 # Persistencia SQL & Migraciones
 sqlalchemy>=2.0.35
@@ -16,6 +17,15 @@ beautifulsoup4>=4.12.3
 google-genai>=0.1.1
 tenacity>=9.0.0
 
-# Testing
+# Machine Learning & Data Processing
+scikit-learn>=1.5.0
+pandas>=2.2.0
+numpy>=1.26.0
+joblib>=1.4.0
+
+# PDF Parsing & Auditoría de CV
+pypdf>=5.0.0
+
+# Testing Automatizado
 pytest>=8.3.0
 pytest-asyncio>=0.24.0

@@ -34,8 +34,10 @@ async def lifespan(app: FastAPI):
     """
     logger.info("=== Iniciando TechPulse AI Backend ===")
     
-    # 1. Asegurar esquema SQL inicializado
+    # 1. Asegurar esquema SQL inicializado y sembrar si está vacío
     Base.metadata.create_all(bind=engine)
+    from backend.app.db.seed import seed_database
+    seed_database()
 
     # 2. Pre-cargar artefactos ML en memoria
     if not MODEL_ARTIFACT_PATH.exists():

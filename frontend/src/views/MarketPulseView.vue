@@ -185,11 +185,10 @@ const seniorityChartData = computed(() => {
       {
         data: values.length ? values : [1],
         backgroundColor: [
-          '#3b82f6', // Senior
-          '#10b981', // Lead
-          '#64748b', // Unknown
-          '#f59e0b', // Semi-senior
-          '#a855f7', // Junior
+          '#3b82f6', // Azul Primario (Senior)
+          '#10b981', // Verde Esmeralda (Lead)
+          '#8b5cf6', // Violeta Tech (Semi-Senior / Mid)
+          '#f59e0b', // Ámbar / Dorado (Junior)
         ],
         borderWidth: 0,
         hoverOffset: 6,

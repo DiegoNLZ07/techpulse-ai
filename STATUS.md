@@ -6,14 +6,15 @@
 ---
 
 ## 2. Estado Actual del Proyecto
-- **Fase Actual:** FASE 5 - Frontend SaaS en Vue 3 (Dark Mode).
+- **Fase Actual:** FASE 6 - Testing Automatizado, CI/CD, Configuración Cloud y README de Alto Impacto.
 - **Estado de Fase 0:** COMPLETADA ✅
 - **Estado de Fase 1:** COMPLETADA ✅
 - **Estado de Fase 2:** COMPLETADA ✅
 - **Estado de Fase 3:** COMPLETADA ✅
 - **Estado de Fase 4:** COMPLETADA ✅
 - **Estado de Fase 5:** COMPLETADA ✅
-- **Próxima Fase:** FASE 6 - Testing Automatizado, README de Alto Impacto y Despliegue en GitHub.
+- **Estado de Fase 6:** COMPLETADA ✅
+- **Estado Global del Proyecto:** 100% COMPLETADO Y LISTO PARA PRODUCCIÓN 🚀
 
 ---
 
@@ -104,28 +105,47 @@
   3. **Registro Exhaustivo en Chart.js:** Configuración con `ChartJS.register(...)` y `maintainAspectRatio: false` con alturas fijas en CSS para evitar bugs de visualización.
   4. **Modo Oscuro Nativo:** Sistema de variables CSS personalizadas (`--bg-primary: #0b0f19`, `--bg-card: #1e293b`, etc.) con estética SaaS comercial B2C/B2B.
 
+### ADR 6.1: Automatización de Calidad, Integración Continua (CI/CD) y Siembra Portátil de Datos
+- **Fecha:** 23-10-2026
+- **Decisión:** **Opción A - Suite de Pruebas Pytest (8 tests unitarios/integración) + GitHub Actions CI (Python 3.12 & Node 20) + Semilla SQLite (`seed_data.json` y `seed.py`) + Configuración Cloud (Render y Vercel)**.
+- **Justificación Técnica:**
+  - Garantiza cobertura integral de regresión en cada commit (salud de API, limpieza de 'unknown' en seniority, gradiente salarial económico Senior > Junior, descarte de uploads maliciosos no-PDF y cálculo continuo de ROI con penalización de liquidez).
+  - La persistencia desacoplada en `seed_data.json` y `seed.py` permite recrear la base de datos de 142 ofertas y re-entrenar el modelo ML en < 10 segundos en cualquier entorno (CI/CD, Render, o clon local nuevo), garantizando total reproducibilidad sin exponer secretos ni depender de archivos binarios `.db` en git.
+  - La configuración multi-cloud (`render.yaml` para FastAPI y `frontend/vercel.json` con rewrites para Vue SPA) asegura un camino directo y automatizado a producción.
+- **Reglas de Implementación Mandatorias:**
+  1. **Aislamiento de Tests con Lifespan:** Uso del fixture `TestClient(app)` dentro de context manager para pre-cargar los modelos en memoria una sola vez.
+  2. **Validación de Integridad:** Pruebas estrictas de gradiente económico donde un perfil Senior debe superar a un Junior con igual stack.
+  3. **Siembra Idempotente:** Script `backend/app/db/seed.py` que comprueba si la base ya tiene datos antes de re-insertar, integrado transparentemente en `backend/main.py`.
+
 ---
 
 ## 4. Estructura Objetivo del Monorepo
 ```text
 techpulse-ai/
+├── .github/
+│   └── workflows/
+│       └── ci.yml          # GitHub Actions CI (Backend Pytest + Frontend Vite Build)
 ├── backend/
 │   ├── app/
 │   │   ├── api/            # Endpoints FastAPI (Mercado, Predicción, Auditoría CV, ROI)
 │   │   ├── core/           # Configuración Pydantic BaseSettings y conexión SQL
+│   │   ├── db/             # Semilla portátil de base de datos (seed.py y seed_data.json)
 │   │   ├── etl/            # Conectores Get On Board + RemoteOK y Extractor LLM
-│   │   ├── ml/             # Feature Engineering, Entrenamiento XGBoost/RF e Inferencia
-│   │   ├── services/       # Parser de CV PDF (PyMuPDF) y Motor de Matching
+│   │   ├── ml/             # Feature Engineering, Entrenamiento de Modelos e Inferencia
+│   │   ├── services/       # Parser de CV PDF (pypdf) y Motor de Matching Top 20%
 │   │   └── models/         # Modelos SQLAlchemy y Esquemas Pydantic
-│   ├── data/               # Datasets procesados y modelos serializados (.joblib)
-│   ├── tests/              # Suite de pruebas unitarias con pytest
+│   ├── data/               # Modelos serializados (.joblib)
+│   ├── tests/              # Suite oficial de pruebas automatizadas con pytest
 │   ├── .env.example
 │   ├── requirements.txt
 │   └── main.py
 ├── frontend/               # Aplicación SPA en Vue 3 + Vite (Dark Mode)
+│   ├── vercel.json         # Configuración de despliegue SPA en Vercel
+│   └── ...
+├── render.yaml             # Configuración de despliegue Backend en Render
 ├── .gitignore              # Blindaje de secretos y entornos
 ├── STATUS.md               # Memoria persistente del sistema
-└── README.md
+└── README.md               # Documentación ejecutiva de alto impacto
 ```
 
 ---
@@ -139,4 +159,5 @@ techpulse-ai/
 | `d7194bc` | `feat(ml): train salary regressor and skill ROI engine` | Torneo 5-Fold CV (Ridge, RF, GB, VotingRegressor), inferencia por intervalos y simulador bidimensional de ROI de skills |
 | `01d6dcf` | `feat(api): implement FastAPI REST endpoints with lifespan and CV PDF auditor` | Endpoints REST (market-pulse, predict-offer, career-roi, audit-cv), gestión lifespan de modelos ML, parser de PDF con PyPDF y CORS |
 | `abc7b77` | `test(api): add endpoint verification script for FastAPI suite` | Suite de verificación para los 4 endpoints REST con TestClient |
-| `79fbed6` | `feat(frontend): implement Vue 3 SPA with Pinia Dark Mode and Chartjs` | Dashboard reactivo de 3 pestañas (Radar de Mercado, Predictor y Auditor de CV), switch de periodicidad USD/mes vs USD/año y presets de 1-clic |
+| `4e91dbc` | `feat(frontend): implement Vue 3 SPA with Pinia Dark Mode and Chartjs` | Dashboard reactivo de 3 pestañas (Radar de Mercado, Predictor y Auditor de CV), switch de periodicidad USD/mes vs USD/año y presets de 1-clic |
+| `HEAD` | `feat(ci-deploy): add test suite, github actions workflow, cloud configs and executive readme` | Suite de pytest con 8 tests, GitHub Actions CI, semilla portátil de datos, render.yaml, vercel.json y README ejecutivo de alto impacto |
